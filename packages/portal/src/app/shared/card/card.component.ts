@@ -43,6 +43,7 @@ export class CardComponent implements OnChanges {
         photos: this.listing.attributes.photos.split("|"),
         address: this.listing.attributes.address.split("|"),
         ammenities: this.listing.attributes.ammenities.split("|"),
+        reviews_stars: this.listing.attributes.reviews_stars,
         slug: this.listing.attributes.slug,
         id: this.listing.id,
       };
@@ -51,6 +52,7 @@ export class CardComponent implements OnChanges {
       castedListing.photos = tmp.photos;
       castedListing.address = tmp.address;
       castedListing.ammenities = tmp.ammenities;
+      castedListing.reviews_stars = tmp.reviews_stars;
       castedListing.slug = tmp.slug;
       castedListing.id = tmp.id;
       this.listing = castedListing;
@@ -60,6 +62,21 @@ export class CardComponent implements OnChanges {
       this.monthlyRentPriceWithDiscount.set(Math.max(0, discount));
     }
   }
+
+  stars(){
+    const totalStars = 5
+    let response: number[] = []
+
+    const filledStars = this.listing?.reviews_stars;
+    if(filledStars){
+      response = Array(totalStars)
+        .fill(0)
+        .map((x, i) => (i < filledStars ? 1 : 0));
+      }
+    return response
+    }
+
+
 
   onImageLoad(event: Event) {
     const target = (event.target as HTMLImageElement).closest(".loading-background") as HTMLDivElement;

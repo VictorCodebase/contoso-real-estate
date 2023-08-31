@@ -13,6 +13,15 @@
     <mat-card-content>
       <mat-card-title>{{ listing?.title }}</mat-card-title>
       <mat-card-subtitle>{{ listing?.address?.[1] }}, {{ listing?.address?.[2] }}</mat-card-subtitle>
+      <div>
+        <span
+          *ngFor="let star of stars()"
+          class="material-symbols-outlined listing-review__stars"
+          [ngClass]="{ fill: star === 1 }"
+        >
+          star
+        </span>
+      </div>
       <p class="listing-description">{{ listing?.description?.substr(0, 100) }}...</p>
 
       <app-favorite-button
