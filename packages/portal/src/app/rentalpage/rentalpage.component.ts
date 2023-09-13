@@ -59,6 +59,7 @@ export class RentalpageComponent implements OnInit {
       this.router.navigate(["/404"]);
     }
 
+
     this.reviewStars.set(Array(5)
       .fill(0)
       .map((x, i) => (i < this.listing().reviews_stars ? 1 : 0)));
@@ -106,12 +107,12 @@ export class RentalpageComponent implements OnInit {
     try {
       const checkoutSession = await this.listingService.reserve(reservationDetails);
       const sessionURL = new URL(checkoutSession.sessionUrl);
-      if (sessionURL.hostname === 'localhost' && window.location.hostname !== 'localhost') {
+      if (sessionURL.hostname === "localhost" && window.location.hostname !== "localhost") {
         // Fix for local testing on Codespaces
         sessionURL.hostname = window.location.hostname;
-        sessionURL.port = '';
+        sessionURL.port = "";
       }
-      console.info('Redirecting to ' + sessionURL);
+      console.info("Redirecting to " + sessionURL);
       window.location.href = sessionURL.toString();
     } catch (error: unknown) {
       if (error instanceof Error) {
