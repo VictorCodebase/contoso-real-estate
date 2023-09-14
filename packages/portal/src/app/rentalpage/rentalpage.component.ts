@@ -8,7 +8,8 @@ import { HasRoleDirective } from "../shared/has-role/has-role.directive";
 import { ListingDetailComponent } from "../shared/listing-detail/listing-detail.component";
 import { ListingService } from "../shared/listing.service";
 import { UserRole, UserService } from "../shared/user/user.service";
-import { generateComments, generateCommentor, generateTime, randomLikeDislike } from "./comment-generator";
+import { CommentGeneratorService } from '../shared/comment-generator.service';
+
 
 @Component({
   selector: "app-rentalpage",
@@ -23,21 +24,23 @@ export class RentalpageComponent implements OnInit {
   navigation: Navigation | null;
   reviewsMapping: { [k: string]: string } = { "=0": "No reviews", "=1": "1 message", other: "# reviews" };
 
+
   listing = signal<Listing>({} as Listing);
   reviewStars = signal<number[]>([]);
-  comments = signal<string[]>([]);
-  commentors = signal<string[]>([]);
-  commentTime = signal<string[]>([]);
-  likes = signal<number[]>([]);
-  dislikes = signal<number[]>([]);
   isLoading = signal(true);
+    comments = signal<string[]>([]);
+    commentors = signal<string[]>([]);
+    commentTime = signal<string[]>([]);
+    likes = signal<number[]>([]);
+    dislikes = signal<number[]>([]);
+
 
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private listingService = inject(ListingService);
   private userService = inject(UserService);
 
-  constructor() {
+  constructor(private commentService: CommentGeneratorService) {
     this.navigation = this.router.getCurrentNavigation();
     this.listing.set(this.navigation?.extras.state?.["listing"] || {});
     this.user = this.navigation?.extras.state?.["user"] || null;
@@ -67,30 +70,12 @@ export class RentalpageComponent implements OnInit {
 
 
     const limit = this.listing().reviews_number > 20 ? 20 : this.listing().reviews_number;
-    // this.comments.set(Array(limit)
-    //   .fill(0)
-    //   .map(() => generateComments(this.listing().reviews_stars)));
-    // this.commentors.set(Array(limit)
-    //   .fill(0)
-    //   .map(() => generateCommentor()));
-    // this.commentTime.set(Array(limit)
-    //   .fill(0)
-    //   .map(() => generateTime()));
-    // this.likes.set(Array(limit)
-    //   .fill(0)
-    //   .map(() => randomLikeDislike(100)));
-    // this.dislikes.set(Array(limit)
-    //   .fill(0)
-    //   .map(() => randomLikeDislike(40)));
 
-    //! ive commented this block out because I felt it might not be really concincise or easily readable
-    //! I can revert it back if its better that way
-
-    const commentsArray = Array(limit).fill(0).map(() => generateComments(this.listing().reviews_stars));
-    const commentorsArray = Array(limit).fill(0).map(() => generateCommentor());
-    const commentTimeArray = Array(limit).fill(0).map(() => generateTime());
-    const likesArray = Array(limit).fill(0).map(() => randomLikeDislike(100));
-    const dislikesArray = Array(limit).fill(0).map(() => randomLikeDislike(40));
+    const commentsArray = Array(limit).fill(0).map(() => this.commentService.generateComments((this.listing().reviews_stars)));
+    const commentorsArray = Array(limit).fill(0).map(() => this.commentService.generateCommentor());
+    const commentTimeArray = Array(limit).fill(0).map(() => this.commentService.generateTime());
+    const likesArray = Array(limit).fill(0).map(() => this.commentService.generateLikesDislikes(100)); // 100 is max sample likes per comment
+    const dislikesArray = Array(limit).fill(0).map(() => this.commentService.generateLikesDislikes(40)); // 40 is max sample dislikes per comment
 
     this.comments.set(commentsArray);
     this.commentors.set(commentorsArray);

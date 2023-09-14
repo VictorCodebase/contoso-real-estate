@@ -203,6 +203,9 @@
     min-height: fit-content;
     max-height: 400px;
     overflow-y: scroll;
+    & > div{
+      width:100%;
+    }
 
     .listing-comments__comment {
       display: flex;
@@ -211,7 +214,6 @@
       justify-content: left;
       padding: 10px 0;
       border-bottom: solid 1px #ccc;
-      width: 730px;
       min-height: 100px;
       max-height: fit-content;
 
@@ -243,7 +245,7 @@
         justify-content: left;
 
         .listing-comments__comment__body__text {
-          color: #999;
+          color: #000;
           margin: 2px;
         }
       }
